@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import PostTarget from './PostTarget'
 
 
-interface Post {
+export interface Post {
     id: string;
     title: string;
-  }
+}
 
 const PostList = () => {
 
@@ -16,7 +16,7 @@ const PostList = () => {
 
         getPosts()
 
-    }, [])
+    }, [posts])
     
     const getPosts = async () => {
         const result = await axios('http://localhost:4000/posts')
@@ -31,7 +31,7 @@ const PostList = () => {
         {
             posts.map(post => (
                 
-                    <PostTarget key={post.id} title={post.title} />
+                    <PostTarget key={post.id} title={post.title} id={post.id} />
             ))      
         }
         </div>
