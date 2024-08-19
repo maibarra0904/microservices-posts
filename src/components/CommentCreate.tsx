@@ -15,6 +15,7 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
 
     const [content, setContent] = useState('')
     const [comments, setComments] = useState([])
+    const [showComments, setShowComments] = useState(false)
 
     useEffect(() => {
         getComments()
@@ -56,8 +57,9 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
             </button>
 
             <div className='mt-4'>
-                <h2 className='mb-2'>Comments:</h2>
+                <h2 className='mb-2 text-indigo-500 hover:cursor-pointer' onClick={()=>setShowComments(!showComments)}>Comments ({comments.length})</h2>
                 {
+                    showComments &&
                     comments.map((comment, index) => (
                         <div key={index}>
                             <li>{comment}</li>
