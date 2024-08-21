@@ -1,15 +1,20 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios';
+import { Post } from './PostList';
 
 
 interface Id {
     postId: string;
 }
 
-interface Comments {
-    comments: string[]
-}
+// interface Comments {
+//     comments: string[]
+// }
 
+interface Comment {
+    id: string;
+    content: string;
+}
 
 const CommentCreate: React.FC<Id> = ({ postId }) => {
 
@@ -26,20 +31,30 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
     }
 
     const getComments = async () => {
-        const result = await axios.get(`http://localhost:4001/posts/${postId}/comments`)
-        const data = result.data
+        //Forma de llamar a los comments directamente del servicio comments
+        {/*
+        const {data} = await axios.get(`http://localhost:4001/posts/${postId}/comments`)
         const bdComments = data.map((el: Comments) => el.comments)
+        setComments(bdComments)
+        */}
+        
+        //Forma de llamar a los comments a partir del query creado
+        const {data} = await axios('http://localhost:4002/posts')
+        const currentPost = data.filter((post: Post) => post.id === postId)
+        const {comments } = currentPost[0]
+        
+        const bdComments = comments.map((el: Comment) => el.content)
         setComments(bdComments)
     }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
 
-        const data = await axios.post(`http://localhost:4001/posts/${postId}/comments`, { content });
+        await axios.post(`http://localhost:4001/posts/${postId}/comments`, { content });
 
         setContent('')
 
-        console.log(data)
+
     }
 
     return (
