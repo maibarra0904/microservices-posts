@@ -38,7 +38,7 @@ const PostList = () => {
                 
                     <PostTarget key={post.id} title={post.title} id={post.id} />
                     //Nota.- Aquí se podría incluir como props comments={post.comments} lo
-                    //que conllevaría un cambio en la programación get de los mismos
+                    //que conllevaría un cambio en la programación get de los comentarios
             ))      
         }
         </div>
