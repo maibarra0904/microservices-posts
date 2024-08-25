@@ -13,17 +13,19 @@ interface Id {
 
 interface Comment {
     id: string;
-    content: string;
+    content?: string;
+    status?: string;
 }
 
 const CommentCreate: React.FC<Id> = ({ postId }) => {
 
     const [content, setContent] = useState('')
-    const [comments, setComments] = useState([])
+    const [comments, setComments] = useState<Comment[]>([])
     const [showComments, setShowComments] = useState(false)
 
     useEffect(() => {
         getComments()
+    
     }, [comments])
 
     const handleTextComment = (e: FormEvent<HTMLTextAreaElement>) => {
@@ -42,9 +44,7 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
         const {data} = await axios('http://localhost:4002/posts')
         const currentPost = data.filter((post: Post) => post.id === postId)
         const {comments } = currentPost[0]
-        
-        const bdComments = comments.map((el: Comment) => el.content)
-        setComments(bdComments)
+        setComments(comments)
     }
 
     const handleSubmit = async (e: FormEvent) => {
@@ -72,14 +72,20 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
             </button>
 
             <div className='mt-4'>
-                <h2 className='mb-2 text-indigo-500 hover:cursor-pointer' onClick={()=>setShowComments(!showComments)}>Comments ({comments.length})</h2>
+                <h2 className='mb-2 text-indigo-500 hover:cursor-pointer' onClick={()=>setShowComments(!showComments)}>Comments ({comments.filter(obj => obj.status === 'approved').length})</h2>
                 {
                     showComments &&
-                    comments.map((comment, index) => (
-                        <div key={index}>
-                            <li>{comment}</li>
-                        </div>
-                    ))
+                    comments.map((comment, index) => {
+
+                        if (comment.status === 'approved') {
+                          return (
+                            <div key={index}>
+                              <li>{comment.content}</li>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })
                 }
             </div>
         </form>
