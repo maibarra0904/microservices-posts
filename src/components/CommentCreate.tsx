@@ -1,6 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios';
-import { Post } from './PostList';
 
 
 interface Id {
@@ -15,6 +14,13 @@ interface Comment {
     id: string;
     content?: string;
     status?: string;
+    comments?: string;
+}
+
+export interface PostCommented {
+    idPost: string;
+    title: string;
+    comments?: string[];
 }
 
 const CommentCreate: React.FC<Id> = ({ postId }) => {
@@ -41,16 +47,18 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
         */}
         
         //Forma de llamar a los comments a partir del query creado
-        const {data} = await axios('http://localhost:4002/posts')
-        const currentPost = data.filter((post: Post) => post.id === postId)
-        const {comments } = currentPost[0]
-        setComments(comments)
+        const {data} = await axios('http://posts.com/posts/comments')
+        
+        const currentPost = data.filter((post: PostCommented) => post.idPost === postId)
+        
+        //const {comments } = currentPost[0]
+        setComments(currentPost)
     }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
 
-        await axios.post(`http://localhost:4001/posts/${postId}/comments`, { content });
+        await axios.post(`http://posts.com/posts/${postId}/comments`, { content });
 
         setContent('')
 
@@ -72,19 +80,20 @@ const CommentCreate: React.FC<Id> = ({ postId }) => {
             </button>
 
             <div className='mt-4'>
-                <h2 className='mb-2 text-indigo-500 hover:cursor-pointer' onClick={()=>setShowComments(!showComments)}>Comments ({comments.filter(obj => obj.status === 'approved').length})</h2>
+                <h2 className='mb-2 text-indigo-500 hover:cursor-pointer' onClick={()=>setShowComments(!showComments)}>Comments ({comments?.length})</h2> 
+                {/* {comments.filter(obj => obj.status === 'approved').length} */}
                 {
                     showComments &&
                     comments.map((comment, index) => {
 
-                        if (comment.status === 'approved') {
+                        //if (comment.status === 'approved') {
                           return (
                             <div key={index}>
-                              <li>{comment.content}</li>
+                              <li>{comment.comments}</li>
                             </div>
                           );
-                        }
-                        return null;
+                        //}
+                        //return null;
                       })
                 }
             </div>

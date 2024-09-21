@@ -24,10 +24,10 @@ const PostList = () => {
         //const result = await axios('http://localhost:4000/posts')
 
         //Se consultan los datos del query
-        const result = await axios('http://localhost:4002/posts')
+        const result = await axios('http://posts.com/posts')
 
         const posts = result.data
-
+        //console.log(posts)
         setPosts(posts)
     }
   return (
